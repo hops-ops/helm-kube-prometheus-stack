@@ -1,0 +1,16 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: KubePrometheusStack
+metadata:
+  name: kube-prometheus-stack
+  namespace: example-env
+spec:
+  clusterName: example-cluster
+  labels:
+    team: platform
+  namespace: monitoring
+  values:
+    grafana:
+      adminPassword: admin
+    prometheus:
+      prometheusSpec:
+        retention: 7d
