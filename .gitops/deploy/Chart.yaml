@@ -2,4 +2,4 @@ apiVersion: v2
 name: helm-kube-prometheus-stack
 version: 0.0.0
 description: GitOps packaging for the kube-prometheus-stack Crossplane configuration
-appVersion: 68.5.0
+appVersion: 80.13.3
