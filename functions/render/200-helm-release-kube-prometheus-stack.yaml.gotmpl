@@ -2,6 +2,11 @@
 #
 # Helm release for kube-prometheus-stack
 #
+# Integration defaults:
+# - Grafana includes Loki and Tempo datasources (assumes same namespace)
+# - Prometheus enabled with remote write capability
+# - ServiceMonitor for Istio metrics if present
+#
 
 {{- $kps := $state.kubePrometheusStack }}
 
@@ -19,7 +24,7 @@ spec:
     chart:
       name: kube-prometheus-stack
       repository: https://prometheus-community.github.io/helm-charts
-      version: 80.13.3
+      version: 80.14.0
     namespace: {{ $kps.namespace }}
     {{- if $kps.overrideAllValues }}
     values:
@@ -32,10 +37,54 @@ spec:
         enabled: true
       prometheus:
         enabled: true
+        prometheusSpec:
+          # Enable remote write for k8s-monitoring or external systems
+          enableRemoteWriteReceiver: true
+          # Scrape all ServiceMonitors across namespaces
+          serviceMonitorSelectorNilUsesHelmValues: false
+          podMonitorSelectorNilUsesHelmValues: false
+          ruleSelectorNilUsesHelmValues: false
       alertmanager:
         enabled: true
       grafana:
         enabled: true
+        # Provision Loki and Tempo datasources for integrated observability
+        additionalDataSources:
+          - name: Loki
+            type: loki
+            uid: loki
+            url: http://loki.{{ $kps.namespace }}:3100
+            access: proxy
+            jsonData:
+              maxLines: 1000
+              derivedFields:
+                - name: TraceID
+                  matcherRegex: '"traceId":"([a-f0-9]+)"'
+                  url: "$${__value.raw}"
+                  datasourceUid: tempo
+          - name: Tempo
+            type: tempo
+            uid: tempo
+            url: http://tempo.{{ $kps.namespace }}:3100
+            access: proxy
+            jsonData:
+              httpMethod: GET
+              tracesToLogsV2:
+                datasourceUid: loki
+                spanStartTimeShift: "-1h"
+                spanEndTimeShift: "1h"
+                filterByTraceID: true
+                filterBySpanID: false
+              tracesToMetrics:
+                datasourceUid: prometheus
+                spanStartTimeShift: "-1h"
+                spanEndTimeShift: "1h"
+              serviceMap:
+                datasourceUid: prometheus
+              nodeGraph:
+                enabled: true
+              lokiSearch:
+                datasourceUid: loki
       {{- if $kps.values }}
       {{- toYaml $kps.values | nindent 6 }}
       {{- end }}
