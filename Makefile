@@ -19,7 +19,8 @@ build:
 # Format: example_path::observed_resources_path (observed_resources_path is optional)
 EXAMPLES := \
     examples/kubeprometheusstacks/minimal.yaml:: \
-    examples/kubeprometheusstacks/standard.yaml::
+    examples/kubeprometheusstacks/standard.yaml:: \
+    examples/kubeprometheusstacks/remote-write-mimir.yaml::
 
 # Render all examples (parallel execution, output shown per-job when complete)
 render\:all:

@@ -31,8 +31,6 @@ spec:
       {{- toYaml $kps.overrideAllValues | nindent 6 }}
     {{- else }}
     values:
-      fullnameOverride: kube-prometheus-stack
-      nameOverride: kube-prometheus-stack
       prometheusOperator:
         enabled: true
       prometheus:
