@@ -33,6 +33,26 @@ _items = [
                     apiVersion = "helm.m.crossplane.io/v1beta1"
                     kind = "Release"
                     metadata.name = "test-kube-prometheus-stack"
+                    spec.forProvider.values = {
+                        prometheusOperator = {
+                            enabled = True
+                        }
+                        prometheus = {
+                            enabled = True
+                            prometheusSpec = {
+                                enableRemoteWriteReceiver = True
+                                serviceMonitorSelectorNilUsesHelmValues = False
+                                podMonitorSelectorNilUsesHelmValues = False
+                                ruleSelectorNilUsesHelmValues = False
+                            }
+                        }
+                        alertmanager = {
+                            enabled = True
+                        }
+                        grafana = {
+                            enabled = True
+                        }
+                    }
                 }
             ]
         }

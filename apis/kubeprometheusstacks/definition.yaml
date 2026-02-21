@@ -57,11 +57,11 @@ spec:
                 description: Helm release name. Defaults to the XR metadata.name.
                 type: string
               values:
-                description: Helm values passed directly to the chart.
+                description: Helm values rendered after inline defaults (prometheusOperator.enabled, prometheus.enabled, alertmanager.enabled, grafana.enabled, remote write receiver enabled).
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               overrideAllValues:
-                description: Helm values passed directly to the chart. Use when a parent composition needs to bypass its own defaults.
+                description: Helm values passed directly to the chart, replacing all defaults.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
           status:

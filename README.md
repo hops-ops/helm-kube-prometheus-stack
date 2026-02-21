@@ -9,7 +9,7 @@ for chart values, namespace, and release name, keeping the interface stable whil
 
 ## Features
 
-- **Minimal Helm interface**: values and overrideAllValues passed directly to Helm
+- **Useful defaults**: Prometheus, Alertmanager, and Grafana enabled by default
 - **Predictable naming**: defaults to `<clusterName>-kube-prometheus-stack` in the `monitoring` namespace
 - **GitOps friendly**: ships a `.gitops/` deploy chart
 

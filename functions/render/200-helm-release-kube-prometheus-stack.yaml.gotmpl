@@ -23,9 +23,24 @@ spec:
     {{- if $kps.overrideAllValues }}
     values:
       {{- toYaml $kps.overrideAllValues | nindent 6 }}
-    {{- else if $kps.values }}
+    {{- else }}
     values:
+      prometheusOperator:
+        enabled: true
+      prometheus:
+        enabled: true
+        prometheusSpec:
+          enableRemoteWriteReceiver: true
+          serviceMonitorSelectorNilUsesHelmValues: false
+          podMonitorSelectorNilUsesHelmValues: false
+          ruleSelectorNilUsesHelmValues: false
+      alertmanager:
+        enabled: true
+      grafana:
+        enabled: true
+      {{- if $kps.values }}
       {{- toYaml $kps.values | nindent 6 }}
+      {{- end }}
     {{- end }}
   rollbackLimit: 3
   providerConfigRef:
